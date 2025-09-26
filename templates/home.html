@@ -1,111 +1,261 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Performance Predictor</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(120deg, #e3eafc 0%, #b6c6e9 100%);
+            margin: 0;
+            padding: 0;
+            transition: background 0.4s;
+        }
+        body.dark-mode {
+            background: linear-gradient(120deg, #232526 0%, #414345 100%);
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            padding: 32px 40px;
+            transition: background 0.4s, color 0.4s;
+        }
+        body.dark-mode .container {
+            background: #2c2c2c;
+            color: #e3eafc;
+        }
+        h1 {
+            color: #28527a;
+            text-align: center;
+            margin-bottom: 24px;
+            transition: color 0.4s;
+        }
+        body.dark-mode h1 {
+            color: #b6c6e9;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        label {
+            font-weight: 500;
+            color: #28527a;
+            transition: color 0.4s;
+        }
+        body.dark-mode label {
+            color: #b6c6e9;
+        }
+        input, select {
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #b0c4de;
+            font-size: 1rem;
+            transition: border-color 0.2s, background 0.4s, color 0.4s;
+        }
+        input:focus, select:focus {
+            border-color: #28527a;
+            outline: none;
+        }
+        body.dark-mode input, body.dark-mode select {
+            background: #232526;
+            color: #b6c6e9;
+            border-color: #28527a;
+        }
+        button {
+            background: #28527a;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #18314f;
+        }
+        .result {
+            margin-top: 24px;
+            padding: 16px;
+            background: #b6c6e9;
+            border-radius: 8px;
+            color: #18314f;
+            font-weight: 600;
+            text-align: center;
+            transition: background 0.4s, color 0.4s;
+        }
+        body.dark-mode .result {
+            background: #232526;
+            color: #b6c6e9;
+        }
+        .error {
+            margin-top: 24px;
+            padding: 16px;
+            background: #ffeaea;
+            border-radius: 8px;
+            color: #d32f2f;
+            font-weight: 600;
+            text-align: center;
+            transition: background 0.4s, color 0.4s;
+        }
+        body.dark-mode .error {
+            background: #414345;
+            color: #ff8a80;
+        }
+        .fade-in {
+            animation: fadeIn 0.7s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            margin-bottom: 16px;
+        }
+        .toggle-switch label {
+            margin-right: 8px;
+            font-size: 1rem;
+        }
+        .footer {
+            margin-top: 32px;
+            text-align: center;
+            color: #28527a;
+            font-size: 1rem;
+            padding-bottom: 8px;
+        }
+        .footer a {
+            color: #28527a;
+            margin: 0 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        .footer a:hover {
+            color: #18314f;
+        }
+        body.dark-mode .footer, body.dark-mode .footer a {
+            color: #b6c6e9;
+        }
+    </style>
+</head>
 <body>
-    <div class="login">
-       <h1>Student Exam Performance Indicator</h1>
-   
-       <form action="{{ url_for('predict_datapoint')}}" method="post">
-        <h1>
-            <legend>Student Exam Performance Prediction</legend>
-        </h1>
-        <div class="mb-3">
-            <label class="form-label">Gender</label>
-            <select class="form-control" name="gender" placeholder="Enter you Gender" required>
-                <option class="placeholder" selected disabled value="">Select your Gender</option>
-                <option value="male">
-                    Male
-                </option>
-                <option value="female">
-                    Female
-                </option>
+    <div class="container fade-in">
+        <div class="toggle-switch">
+            <label for="darkModeToggle">Dark Mode</label>
+            <input type="checkbox" id="darkModeToggle">
+        </div>
+        <h1>Student Performance Predictor</h1>
+        <form method="POST" action="/predictdata" id="predictForm">
+            <label for="gender">Gender</label>
+            <select name="gender" id="gender" required>
+                <option value="">Select</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
             </select>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Race or Ethnicity</label>
-            <select class="form-control" name="ethnicity" placeholder="Enter you ethnicity" required>
-                <option class="placeholder" selected disabled value="">Select Ethnicity</option>
-                <option value="group A">
-                    Group A
-                </option>
-                <option value="group B">
-                    Group B
-                </option>
-                <option value="group C">
-                    Group C
-                </option>
-                <option value="group D">
-                    Group D
-                </option>
-                <option value="group E">
-                    Group E
-                </option>
+
+            <label for="ethnicity">Race/Ethnicity</label>
+            <select name="ethnicity" id="ethnicity" required>
+                <option value="">Select</option>
+                <option value="group A">Group A</option>
+                <option value="group B">Group B</option>
+                <option value="group C">Group C</option>
+                <option value="group D">Group D</option>
+                <option value="group E">Group E</option>
             </select>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Parental Level of Education</label>
-            <select class="form-control" name="parental_level_of_education"
-                placeholder="Enter you Parent Education" required>
-                <option class="placeholder" selected disabled value="">Select Parent Education</option>
-                <option value="associate's degree">
-                    associate's degree
-                </option>
-                <option value="bachelor's degree">
-                    bachelor's degree
-                </option>
-                <option value="high school">
-                    high school
-                </option>
-                <option value="master's degree">
-                    master's degree
-                </option>
-                <option value="some college">
-                    some college
-                </option>
-                <option value="some high school">
-                    some high school
-                </option>
+
+            <label for="parental_level_of_education">Parental Level of Education</label>
+            <select name="parental_level_of_education" id="parental_level_of_education" required>
+                <option value="">Select</option>
+                <option value="associate's degree">Associate's degree</option>
+                <option value="bachelor's degree">Bachelor's degree</option>
+                <option value="some college">Some college</option>
+                <option value="some high school">Some high school</option>
+                <option value="high school">High school</option>
+                <option value="master's degree">Master's degree</option>
             </select>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Lunch Type</label>
-            <select class="form-control" name="lunch" placeholder="Enter you Lunch" required>
-                <option class="placeholder" selected disabled value="">Select Lunch Type</option>
-                <option value="free/reduced">
-                    free/reduced
-                </option>
-                <option value="standard">
-                    standard
-                </option>
+
+            <label for="lunch">Lunch</label>
+            <select name="lunch" id="lunch" required>
+                <option value="">Select</option>
+                <option value="standard">Standard</option>
+                <option value="free/reduced">Free/Reduced</option>
             </select>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Test preparation Course</label>
-            <select class="form-control" name="test_preparation_course" placeholder="Enter you Course"
-                required>
-                <option class="placeholder" selected disabled value="">Select Test_course</option>
-                <option value="none">
-                    None
-                </option>
-                <option value="completed">
-                    Completed
-                </option>
+
+            <label for="test_preparation_course">Test Preparation Course</label>
+            <select name="test_preparation_course" id="test_preparation_course" required>
+                <option value="">Select</option>
+                <option value="none">None</option>
+                <option value="completed">Completed</option>
             </select>
+
+            <label for="reading_score">Reading Score</label>
+            <input type="number" name="reading_score" id="reading_score" min="0" max="100" required>
+
+            <label for="writing_score">Writing Score</label>
+            <input type="number" name="writing_score" id="writing_score" min="0" max="100" required>
+
+            <button type="submit">Predict Math Score</button>
+        </form>
+        {% if results %}
+        <div class="result fade-in">
+            Predicted Math Score: {{ results }}
         </div>
-        <div class="mb-3">
-            <label class="form-label">Writing Score out of 100</label>
-            <input class="form-control" type="number" name="reading_score"
-                placeholder="Enter your Reading score" min='0' max='100' />
+        {% endif %}
+        {% if error %}
+        <div class="error fade-in">
+            {{ error }}
         </div>
-        <div class="mb-3">
-            <label class="form-label">Reading Score out of 100</label>
-            <input class="form-control" type="number" name="writing_score"
-                placeholder="Enter your Reading Score" min='0' max='100' />
+        {% endif %}
+        <div class="footer">
+            Connect with me:
+            <a href="https://github.com/ImperialJaat7121" target="_blank">GitHub</a> |
+            <a href="https://www.linkedin.com/in/imperialjaat7121/" target="_blank">LinkedIn</a>
         </div>
-        <div class="mb-3">
-            <input class="btn btn-primary" type="submit" value="Predict your Maths Score" required />
-        </div>
-    </form>
-    <h2>
-       THE  prediction is {{results}}
-    </h2>
-   <body>
+    </div>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('predictForm');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                const inputs = form.querySelectorAll('input, select');
+                let valid = true;
+                inputs.forEach(input => {
+                    if (input.value === '') {
+                        input.style.borderColor = '#d32f2f';
+                        valid = false;
+                    } else {
+                        input.style.borderColor = '#b0c4de';
+                    }
+                });
+                if (!valid) {
+                    e.preventDefault();
+                    alert('Please fill all fields before submitting.');
+                }
+            });
+        }
+        // Dark mode toggle
+        const darkToggle = document.getElementById('darkModeToggle');
+        darkToggle.addEventListener('change', function() {
+            document.body.classList.toggle('dark-mode', darkToggle.checked);
+        });
+        // Remember dark mode preference
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+            darkToggle.checked = true;
+        }
+        darkToggle.addEventListener('change', function() {
+            localStorage.setItem('darkMode', darkToggle.checked);
+        });
+    });
+    </script>
+</body>
 </html>
